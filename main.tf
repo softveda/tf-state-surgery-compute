@@ -7,8 +7,8 @@ data "azurerm_resource_group" "this" {
   name = "pratik-largestate"
 }
 data "tfe_outputs" "shared" {
-  organization = var.organization
-  workspace    = var.ws_network
+  organization = var.tfe_organization
+  workspace    = var.tfe_ws_shared
 }
 
 # Create compute resources
