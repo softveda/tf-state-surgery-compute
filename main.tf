@@ -6,10 +6,9 @@ provider "azurerm" {
 data "azurerm_resource_group" "this" {
   name = "pratik-largestate"
 }
-
-data "azurerm_network_interface" "backend" {
-  name                = "largestate-backend-vm-nic"
-  resource_group_name = data.azurerm_resource_group.this.name
+data "tfe_outputs" "shared" {
+  organization = var.organization
+  workspace    = var.ws_network
 }
 
 # Create compute resources
@@ -27,7 +26,7 @@ resource "azurerm_linux_virtual_machine" "backend" {
   size                = "Standard_B1s"
   admin_username      = "adminuser"
   network_interface_ids = [
-    data.azurerm_network_interface.backend.id,
+    data.tfe_outputs.shared.values.network_interface_id
   ]
 
   os_disk {
