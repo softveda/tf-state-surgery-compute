@@ -35,5 +35,5 @@ module "ubuntu-vm" {
       name = "BackendOsDisk"
     }
   }
-  network_interface_id = data.azurerm_network_interface.backend.id
+  network_interface_id = data.tfe_outputs.shared.values.network_interface_id
 }
