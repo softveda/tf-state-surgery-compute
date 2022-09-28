@@ -19,32 +19,21 @@ resource "tls_private_key" "this" {
   rsa_bits  = 4096
 }
 
-resource "azurerm_linux_virtual_machine" "backend" {
-  name                = "largestate-backend-vm"
-  resource_group_name = data.azurerm_resource_group.this.name
-  location            = data.azurerm_resource_group.this.location
-  size                = "Standard_B1s"
-  admin_username      = "adminuser"
-  network_interface_ids = [
-    data.tfe_outputs.shared.values.network_interface_id
-  ]
-
-  os_disk {
-    name                 = "BackendOsDisk"
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
+module "ubuntu-vm" {
+  source  = "app.terraform.io/pratik-hc/ubuntu-vm/azure"
+  version = "1.0.1"
+  # insert required variables here
+  rg = {
+    location = data.azurerm_resource_group.this.location
+    name     = data.azurerm_resource_group.this.name
   }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+  vm = {
+    name    = "largestate-backend-vm"
+    size    = "Standard_B1s"
+    ssh_key = tls_private_key.this.public_key_openssh
+    os_disk = {
+      name = "BackendOsDisk"
+    }
   }
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = tls_private_key.this.public_key_openssh
-  }
-
+  network_interface_id = data.azurerm_network_interface.backend.id
 }

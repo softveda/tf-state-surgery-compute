@@ -1,5 +1,5 @@
 output "backend_public_ip" {
-  value = azurerm_linux_virtual_machine.backend.public_ip_address
+  value = module.ubuntu-vm.vm_public_ip
 }
 
 output "tls_private_key" {
