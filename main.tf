@@ -19,6 +19,11 @@ resource "tls_private_key" "this" {
   rsa_bits  = 4096
 }
 
+moved {
+  from = azurerm_linux_virtual_machine.backend
+  to   = module.ubuntu-vm.azurerm_linux_virtual_machine.this
+}
+
 module "ubuntu-vm" {
   source  = "app.terraform.io/pratik-hc/ubuntu-vm/azure"
   version = "1.0.1"
